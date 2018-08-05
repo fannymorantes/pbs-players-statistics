@@ -1,0 +1,32 @@
+
+.navbarBg{
+	background-color: #ced7e6;
+	border-color: #ced7e6;
+}
+
+.modal-title-players {
+    min-height: 16.43px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.rating{
+	color: #ff6000;
+}
+
+#chartdiv {
+	width		: 100%;
+	height		: 500px;
+	font-size	: 10px;
+}	
+
+.statistics{
+	text-align: end !impotant;
+    padding-top: 15px !impotant;
+    
+}	
+.center{
+	text-align: center;
+}			

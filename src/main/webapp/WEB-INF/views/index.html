@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>PBS FullStack test</title>
+<link rel="stylesheet"th:href="@{/resources/css/style.css}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" th:src="@{/resources/js/home.js}"></script>
+<!-- Amcharts -->
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
+</head>
+<body>
+	<nav class="navbar navbarBg navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="https://www.playtech.com/" target="_blank"><img th:src="@{/resources/images/playtech-logo.png}"/></a>
+			</div>
+		</div>
+	</nav>
+<p></p>
+    <div class="jumbotron">
+		<div class="container">
+			<div class="panel-group">
+			<p></p>
+				<div th:unless="${error}" class="panel-group" id="accordion">
+					  <div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+					        Goal Statistics <span class="glyphicon glyphicon-triangle-bottom"></span></a>
+					      </h4>
+					    </div>
+					    <div id="collapse1" class="panel-collapse collapse">
+					      <div id="chartdiv"></div>	
+					    </div>
+					  </div>
+					
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3>Player Statistics</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table table-hover">
+						    <thead>
+						      <tr>
+						        <th>R</th>
+						        <th>Name</th>
+						        <th>Team</th>
+						        <th>Tournament Name</th>
+						        <th>Goal</th>
+						        <th>Yellow card</th>
+						        <th>Red card</th>
+						        <th>Shots per game</th>
+						        <th class="rating">Rating</th>
+						      </tr>
+						    </thead>
+						    <tbody>
+						      <tr style="cursor: pointer;" th:each="record : ${records}" th:id="'player'+${record.ranking}" th:onclick="|playerDetails('${record.ranking}')|">
+						        <td><span th:utext="${record.ranking}"></span></td>
+						        <td><img id="playerFlag" class="playerFlag" width="16px" height="13px" th:src="|resources/images/flags/${record.regionCode}.jpg|"> <span th:utext="${record.name}"></span></td>
+						        <td><img id="playerFlag" class="playerFlag" width="16px" height="13px" th:src="|resources/images/flags/${record.tournamentRegionCode}.jpg|"> <span th:utext="${record.teamName}"></span></td>
+						        <td><span th:utext="${record.tournamentName}"></span></td>
+						        <td class="center"><span th:text="${record.goal}"></span></td>
+						        <td class="center"><span th:text="${record.yellowCard}"></span></td>
+						        <td class="center"><span th:utext="${record.redCard}"></span></td>
+						        <td class="center"><span th:utext="${record.shotsPerGame}"></span></td>
+						        <td class="center"><span class="rating" th:text="${record.rating}"></span></td>
+						      </tr>
+						      
+						    </tbody>
+						  </table>	
+					</div>
+				</div>
+				</div>
+				<div th:if="${error}" class="panel-group" id="accordion">
+					<div class="panel panel-default">
+					    <div class="panel-heading">
+					      <h4 class="panel-title">
+					        Error reading the API
+					      </h4>
+					    </div>
+					    
+					  </div>
+				</div>
+			</div>
+			
+			
+			
+			
+		</div> <!-- /container -->
+    </div>
+    
+	<!-- Player details Modal -->
+	<div class="modal fade" id="playerDetailsModal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+		    
+		    <!-- Modal Header -->
+		    <div  class="modal-title-players">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h3 class="modal-title" id="headerModal"></h3>
+		    </div>
+		    <!-- Modal body -->
+			<div class="modal-body">
+				<div class="panel panel-default">
+					<div class="panel-body row">
+						<div class="col-sm-3">
+							<img id="playerPicture" class="playerPicture" width="100px" height="150px" src="">
+						</div>
+						<div class="col-sm-9">
+							<div class="row">
+								<div class="col-sm-7">
+									<span><b>Name: </b></span>
+									<span id="namePlayer"></span>
+								</div>
+								<div class="col-sm-4">
+									<span><b>Age:</b> </span>
+									<span id="agePlayer"></span>
+									<span>years</span>
+								</div>
+							</div>
+							<p></p>
+							<div class="row">
+								<div class="col-sm-7">
+									<span><b>Team:</b> </span>
+									<span id="teamName"></span>
+									<img id="tournamentRegionCode" class="playerFlag" width="16px" height="13px" src="">
+									
+								</div>
+								<div class="col-sm-4">
+									<span><b>Height: </b> </span>
+									<span id="height"></span>
+									<span>cm</span>
+								</div>
+							</div>
+							<p></p>
+							<div class="row">
+								<div class="col-sm-7">
+									<span><b>Position:</b> </span>
+									<span id="positionText"></span>
+								</div>
+								<div class="col-sm-4">
+									<span><b>Weight: </b> </span>
+									<span id="weight"></span>
+									<span>kg</span>
+								</div>
+							</div>
+							<p></p>
+							<div class="row">
+								<div class="col-sm-7">
+									<span><b>Player Id:</b> </span>
+									<span id="playerId"></span>
+								</div>
+								<div class="col-sm-4">
+									<span><b>Citizenship: </b> </span>
+									<img id="regionCode" class="playerFlag" width="16px" height="13px" src="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p></p>
+				<!-- Tournament details -->
+				<div class="panel panel-default">
+					<div class="panel-body row">
+						<div class="col-sm-12">
+							<div class="row">
+								<div class="col-sm-12">
+									<h4 class="text-center"><b>Tournament: </b> <span id="tournamentName"></span>  </h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<p><b>Seasson: </b> <span id="seasonName"></span></p>
+								</div>
+								<div class="col-sm-6">
+									<p><b>Played positions: </b> <span id="playedPositions"></span></p>
+								</div>
+							</div>
+							<p></p>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="col-sm-12">
+										<span><b>Minutes Played:</b> </span>
+										<span id="minsPlayed"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Goal: </b> </span>
+										<span id="goal"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Total assist: </b> </span>
+										<span id="assistTotal"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Yellow card: </b> </span>
+										<span id="yellowCard"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Red card: </b> </span>
+										<span id="redCard"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Shots per game: </b> </span>
+										<span id="shotsPerGame"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Rating: </b> </span>
+										<span id="rating"></span>
+									</div>
+									
+									
+									
+								</div>
+								<div class="col-sm-6">
+								<div class="col-sm-12">
+										<span><b>Aerial won per game: </b> </span>
+										<span id="aerialWonPerGame"></span>
+									</div>
+									
+									<div class="col-sm-12">
+										<span><b>Pass success: </b> </span>
+										<span id="passSuccess"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Apps: </b> </span>
+										<span id="apps"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Substitutions: </b> </span>
+										<span id="subOn"></span>
+									</div>
+									<div class="col-sm-12">
+										<span><b>Man of the match: </b> </span>
+										<span id="manOfTheMatch"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+					
+			</div>
+		
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			</div>
+	
+	    </div>
+	  </div>
+	</div>
+</body>
+</html>
